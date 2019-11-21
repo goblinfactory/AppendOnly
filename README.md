@@ -28,11 +28,14 @@ Lastly: This class is totally safe to use in really really tight loops. As in, a
     // original moves still has no items even though new_list has added an item to the List.
     Debug.Assert(moves.Length == 0);
 
-    // new_list has 1 item in it's collection
+    // new_list has 10 item in it's collection
     Debug.Assert(new_moves.Length == 10);
 
 
     // this list is safe to iterate over multiple times and is threadsafe
+    // code below shows iterating over the whole list ten times, something you would normally only do against
+    // an enumerable if you've cached it, i.e. created a local copy.
+    // I know this doesn't look like it's doing much, but this is really important. 
     for(int i = 0; i<10; i++)
     {
         foreach(var move in new_moves.Items) Console.WriteLine($"you moved {move.ToString()}");
@@ -48,7 +51,7 @@ is NO new clones made, only a point to the head of the list and the Length is ma
 
 ## Project status
 
-this is version `0.1.0` which means it's not ready for production use. It's a proof of concept, and I need to write some threading tests to prove the claims above, and then ask my peers to review and let me know.
+this is version `0.1.3` which means it's not ready for production use. It's a proof of concept, and I need to write some threading tests to prove the claims above, and then ask my peers to review and let me know.
 
 I also want to do a speed comparison between this and other collections as well as a side by side comparison.
 
