@@ -1,4 +1,5 @@
-# appendonly-list
+# AppendOnly
+
 High speed C#  immutable append only list. 
 
 ## Install 
