@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>AppendOnly</PackageId>
+    <Version>0.1.0</Version>
+    <Title>High speed C# immutable append only collections, starting with `AppendOnlyList`</Title>
+    <Authors>Alan Hemmings</Authors>
+    <Company>Goblinfactory Limited</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+  </PropertyGroup>
+
+</Project>
