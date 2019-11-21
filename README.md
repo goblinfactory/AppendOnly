@@ -40,7 +40,7 @@ Lastly: This class is totally safe to use in really really tight loops. As in, a
     // something that is a massive NO NO in threading world. Here, it's totally safe.
     for(int i = 0; i<10; i++)
     {
-        foreach(var move in new_moves.Items) DoSomethingFunky(move);
+        foreach(var move in new_moves.Items) await DoSomethingFunkyAsync(move);
     }
 ```
 
