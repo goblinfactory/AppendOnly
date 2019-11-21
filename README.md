@@ -4,7 +4,7 @@ High speed C#  immutable append only list.
 
 ## Install 
 
-> dotnet add package Goblinfactory.AppendOnly
+> dotnet add package AppendOnly
 
 ## Why another immutable collection class?
 
