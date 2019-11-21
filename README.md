@@ -36,6 +36,8 @@ Lastly: This class is totally safe to use in really really tight loops. As in, a
     // code below shows iterating over the whole list ten times, something you would normally only do against
     // an enumerable if you've cached it, i.e. created a local copy.
     // I know this doesn't look like it's doing much, but this is really important. 
+    // also, it's safe to do this WHILE other threads are busy adding to the same underlying collection, 
+    // something that is a massive NO NO in threading world. Here, it's totally safe.
     for(int i = 0; i<10; i++)
     {
         foreach(var move in new_moves.Items) Console.WriteLine($"you moved {move.ToString()}");
