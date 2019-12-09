@@ -14,6 +14,16 @@ Secondly, the existing immutable libraries are complex and hard to use. They req
 
 Lastly: This class is totally safe to use in really really tight loops. As in, as tight as you can get.
 
+## (potentially n squared / 2 better)
+
+AppendOnly uses A linkedList internally, and never copies the collection items when creating a new "immutable" copy. It simply returns a new collection class that shares the same internal "mutable" linkedList, but does not expose any methods to mutate it, only exposing an interator that iterates through the first (n) items in the collection. 
+
+So as the collection grows bigger, earlier (older) instances of the collection class, will never see (expose via the enumerator) the new entries appended to the end of the list. After adding 1000 new "transactions" to a appendOnly transactionCollection, you effectively have (if you kept the references to each newly created collection) 1000 pointers to collections each containing, 1, 2, 3, 4 etc items, but with close to zero additional memory overhead.
+
+If using the other immutable libraries with builders, most of them would give you at minimum 500 000 instances of objects.
+
+I may be wrong, it's a starting point, let me know if you use this. I'll be create more collections along similar lines.
+
 ## usage
 
 ```csharp
