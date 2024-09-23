@@ -80,6 +80,88 @@ Alan Hemmings,
 twitter  : @snowcode 
 LinkedIn : https://www.linkedin.com/in/goblinfactory
 www      : https://goblinfactory.co.uk
-
 ```
 
+# Update 23 September 2024 (need to revisit this project) 
+
+#### It's been a few years since I originally wrote this; 
+
+...and didnt use it much, and well, forgot about it. Things (C#) have moved on a lot since I wrote this, and while there's a lot of changes in C#, none of them have really simplified things a lot. Unfortunately I think my thoughts above, about when to use this package, in light of new language changes, might be rubbish, and may have been...quite faulty. Test are DEFININITELY be necessary before doing anything further. Here's some notes from a quick chat with an AI C# Architect, suggesting a revist to this project. TBH I think this project might still be warranted, but perhaps as a DSL wrapper (kind of simple factory class) around the different ways to properly create appendonly type structures. Nuff said; here's the feedback;
+
+</hr>
+
+(draft notes, needs to be tested, and confirmed!)
+
+## Q: Is there a more efficient append only memory structure for C# that can be efficiently enumerated?
+
+## : A: Yes
+
+Yes, in C#, you can use `System.Collections.Generic.ArrayBuffer<T>` or `System.Buffers.ArrayPool<T>` for more efficient append-only and memory-efficient structures that can be enumerated efficiently. However, if you want a more practical, efficient append-only structure, consider these options:
+
+1. `ImmutableArray<T>.Builder`
+- An append-only structure provided by the `System.Collections.Immutable` package.
+- It allows efficient appending and is mutable while building, but becomes immutable once converted to an `ImmutableArray<T>`.
+
+```cs
+var builder = ImmutableArray.CreateBuilder<int>();
+builder.Add(1);
+builder.Add(2);
+var immutableArray = builder.ToImmutable();
+```
+
+2. `Memory<T>` and `Span<T>` with `ArrayPool<T>`
+- Efficient for handling large data blocks with minimal memory allocations.
+- You manage memory yourself, which avoids frequent reallocations compared to `List<T>`.
+- Suitable if you want more control over memory usage but require careful management.
+
+```cs
+var pool = ArrayPool<int>.Shared;
+int[] array = pool.Rent(1000); // Request an array from the pool
+// Append and manage your data here
+pool.Return(array); // Return to the pool when done
+```
+
+3. `ValueListBuilder<T>` (From System.Buffers)
+- Provides an efficient way to build collections in a stack-allocated fashion.
+- Especially useful when you know the data size is bounded and want high performance without heap allocations.
+```cs
+Span<int> initialSpan = stackalloc int[16]; 
+var valueListBuilder = new ValueListBuilder<int>(initialSpan);
+
+valueListBuilder.Append(1);
+valueListBuilder.Append(2);
+ReadOnlySpan<int> span = valueListBuilder.AsSpan();
+```
+
+4. `Sequence<T>` from System.IO.Pipelines
+- Suited for handling a sequence of data efficiently in an append-only manner.
+- Good for scenarios requiring high-performance I/O operations and streaming data.
+
+## Summary
+
+- `List<T>`: Good for appending (amortized `O(1)`) and provides fast enumeration due to contiguous memory.
+- `ImmutableArray<T>.Builder`: Efficient for appending and then making immutable.
+- `Memory<T>` with `ArrayPool<T>`: Great for reducing allocations.
+- `ValueListBuilder<T>`: Efficient stack-based building when size is known. Stack-based, suitable for temporary, efficient collections.
+- `Sequence<T>`: For high-throughput scenarios needing efficient appending.
+
+Choose based on your specific performance and memory requirements.
+
+# what about linkedlist?
+
+ChatGPT said;
+
+`LinkedList<T>` in C# is an option for an append-only memory structure, but it's generally less memory-efficient and slower for enumeration compared to other structures due to the following reasons:
+
+### Considerations with `LinkedList<T>`:
+
+ - **Memory Overhead**: Each node in a `LinkedList<T>` contains references to both the next and previous nodes, which introduces significant memory overhead compared to contiguous structures like arrays or `List<T>`.
+ - **Cache Inefficiency**: Unlike arrays or `List<T>` which are stored in contiguous memory, `LinkedList<T>` nodes are scattered across the heap. This makes it less cache-friendly, leading to slower iteration and access times.
+- **Enumeration Performance**: While `LinkedList<T>` is efficient for append operations (`O(1)` for adding to the end), its enumeration performance is typically slower than arrays or lists because it lacks the cache locality advantage.
+
+### When to Use `LinkedList<T>`:
+
+- When you need frequent insertions or deletions at both ends or in the middle.
+- If you want to avoid shifting elements like in `List<T>`.
+
+#### In summary, `LinkedList<T>` can be used for append-only scenarios but is generally not the most efficient choice for enumeration or memory usage compared to `List<T>` or other modern data structures.
