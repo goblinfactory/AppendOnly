@@ -1,6 +1,6 @@
 # AppendOnly
 
-High speed C#  immutable append only list. 
+High speed C#  immutable append only list.  (update:23 Sep 24; not recommended to use. See notes at bottom for rationale and alternatives.)
 
 ## Install 
 
